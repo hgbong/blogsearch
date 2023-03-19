@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    // todo
+    // todo  예외 항목 구체화
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception e) {
