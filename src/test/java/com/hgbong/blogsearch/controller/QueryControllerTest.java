@@ -9,12 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class QueryControllerTest {
 
     @Autowired
@@ -39,7 +42,6 @@ class QueryControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
             .andExpect(MockMvcResultMatchers.jsonPath("$[0].query", Matchers.containsString("test")));
     }
-
 
     @Test
     @DisplayName("15개의 검색어에 대해, 각각 1~15번 호출하고 결과의 처음과 마지막 원소 확인")
