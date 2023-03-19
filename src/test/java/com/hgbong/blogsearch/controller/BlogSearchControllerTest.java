@@ -42,7 +42,6 @@ class BlogSearchControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.totalCount").isNumber());
     }
 
-
     @Test
     void listBlogs_queryWithPaging() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/blogs")
