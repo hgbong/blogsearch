@@ -1,8 +1,7 @@
 package com.hgbong.blogsearch.model.search;
 
 import io.swagger.annotations.ApiParam;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,15 +10,17 @@ import lombok.Setter;
 @Setter
 public class BlogSearchCriteria {
     @ApiParam(value = "질의어", example = "test")
-    @NotNull(message = "query should not be null")
+    @NotBlank // todo  message i18n
     private String query;
 
     @ApiParam(value = "페이지", example = "1")
-    @Size(min = 1, max = 50, message = "page should be 1 to 50")
+    @Min(1)
+    @Max(50)
     private int page = 1;
 
     @ApiParam(value = "사이즈", example = "10")
-    @Size(min = 1, max = 50, message = "size should be 1 to 50")
+    @Min(1)
+    @Max(50)
     private int size = 10;
 
     // todo  validate BlogSortType
