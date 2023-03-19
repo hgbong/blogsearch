@@ -3,8 +3,7 @@ package com.hgbong.blogsearch.service;
 import com.hgbong.blogsearch.model.common.PageResponse;
 import com.hgbong.blogsearch.model.search.BlogSearchCriteria;
 import com.hgbong.blogsearch.model.search.DocumentDto;
-import com.hgbong.blogsearch.model.search.DocumentPageDto;
-import com.hgbong.blogsearch.model.search.SearchEngine;
+import com.hgbong.blogsearch.model.search.SearchEngineImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,13 +13,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BlogSearchService {
 
-    private final SearchEngine searchEngine;
-
+    private final SearchEngineImpl searchEngine;
 
     public PageResponse<DocumentDto> pageBlogs(BlogSearchCriteria blogSearchCriteria) {
-
-        // fixme  multi thread
         PageResponse<DocumentDto> search = searchEngine.search(blogSearchCriteria);
         return search;
     }
+
+    // 그외 서비스 메소드 작성
+
 }
