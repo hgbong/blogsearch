@@ -1,5 +1,6 @@
 package com.hgbong.blogsearch.model.search;
 
+import com.hgbong.blogsearch.annotation.BlogSortCheck;
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class BlogSearchCriteria {
     @Max(50)
     private int size = 10;
 
-    // todo  validate BlogSortType
+    @BlogSortCheck
     @ApiParam(value = "정렬", example = "recency")
     private String sort = BlogSortType.ACCURACY;
 }
