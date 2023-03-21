@@ -1,8 +1,12 @@
 package com.hgbong.blogsearch.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
 
 @Entity
