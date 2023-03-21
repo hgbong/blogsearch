@@ -20,9 +20,12 @@ search-engine:
     url: https://dapi.kakao.com
     path: /v2/search/blog
     token: e5d890141a40a5289b1d74160b192c81
-    # todo
+    # todo  네이버 API auth key 발급
   naver:
     url: https://developers.naver.com
     path: /docs/serviceapi/search/blog/blog.md
-    token: aaa
+    id: myId
+    password: myPw
 
+# 캐시 검색어/검색횟수 데이터 DB 반영 주기
+query-cron: "*/1 * * * * *"

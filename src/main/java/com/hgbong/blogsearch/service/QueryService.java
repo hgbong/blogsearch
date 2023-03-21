@@ -26,31 +26,31 @@ public class QueryService {
 
     private final ModelMapper modelMapper;
 
-
     /**
-     * 한번 이상 검색된 문자열은 카운트 1 증가시키고, 처음 검색된 문자열은 새로 추가
-     * @param queryStr
+     * 인기검색어 10개를 조회한다.
+     * @return 검색어 10개
      */
-    @Async("queryThreadPoolTaskExecutor")
-    public synchronized CompletableFuture<Void> increaseQueryCountAsync(String queryStr) {
-
-        // todo  동시성 이슈 처리
-
-        Optional<Query> opQuery = queryRepository.findById(queryStr);
-        if (opQuery.isPresent()){
-            Query query = opQuery.get();
-            query.addCount();
-        } else {
-            queryRepository.save(new Query(queryStr));
-        }
-
-        return CompletableFuture.completedFuture(null);
-    }
-
     public List<QueryDto> listFavoriteQueries() {
         List<Query> queries = queryRepository.findTop10ByOrderByCountDesc();
         return queries.stream()
             .map(q -> modelMapper.map(q, QueryDto.class))
             .collect(Collectors.toList());
+    }
+    
+    /**
+     * 특정 검색어에 대해 검색된 횟수만큼 DB에 추가한다.
+     * @param query 검색어
+     * @param count 검색횟수
+     */
+    @Async("queryThreadPoolTaskExecutor")
+    public CompletableFuture<Void> addQueryCount(String query, long count) {
+        Optional<Query> opQuery = queryRepository.findById(query);
+        if (opQuery.isPresent()){
+            opQuery.get().addCount(count);
+        } else {
+            queryRepository.save(new Query(query, count));
+        }
+
+        return CompletableFuture.completedFuture(null);
     }
 }

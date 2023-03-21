@@ -8,6 +8,7 @@ import org.springframework.data.domain.Persistable;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(of = {"query", "count"})
 public class Query implements Persistable<String> {
 
     @Id
@@ -16,9 +17,9 @@ public class Query implements Persistable<String> {
     @Column(nullable = false)
     private long count;
 
-    public Query(String query) {
+    public Query(String query, long count) {
         this.query = query;
-        this.count = 1;
+        this.count = count;
     }
 
     @Transient
@@ -33,7 +34,7 @@ public class Query implements Persistable<String> {
         return this.count < 1;
     }
 
-    public void addCount() {
-        this.count++;
+    public void addCount(long count) {
+        this.count += count;
     }
 }

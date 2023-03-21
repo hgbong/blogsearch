@@ -4,27 +4,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hgbong.blogsearch.entity.Query;
 import com.hgbong.blogsearch.repository.QueryRepository;
-import io.swagger.annotations.Authorization;
+import com.hgbong.blogsearch.util.QueryStorage;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.system.SystemProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.Date;
+import java.util.List;
+
+import static org.awaitility.Awaitility.await;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,6 +34,12 @@ class QueryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @SpyBean
+    private QueryStorage queryStorage;
+
+    @Autowired
+    private QueryRepository queryRepository;
 
     @Test
     void listFavoriteQueries_queryNotExists() throws Exception {
@@ -47,6 +54,12 @@ class QueryControllerTest {
             mockMvc.perform(MockMvcRequestBuilders.get("/blogs")
                 .queryParam("query","test" + i));
         }
+
+        // fixme  스케줄러 관련 테스트 작성
+        //  AS-IS Async job을 profile="test" 에서 동작하지 않도록 수정 -> Async job을 main 쓰레드에서 실행 -> rollback O
+        //  TO-BE scheduler 에서 주기적으로 DB 요청 -> 별도 쓰레드에서 tx 관리 -> rollback X
+        await().atMost(Duration.ofSeconds(30))
+                .untilAsserted(() -> verify(queryStorage, atLeast(2)).saveQueryCount());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/querys/favorite"))
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -63,6 +76,8 @@ class QueryControllerTest {
                     .queryParam("query","test" + i));
             }
         }
+
+        // fixme  위의 TC와 동일한 이슈
 
         String response = mockMvc.perform(MockMvcRequestBuilders.get("/querys/favorite"))
             .andExpect(MockMvcResultMatchers.status().isOk())
