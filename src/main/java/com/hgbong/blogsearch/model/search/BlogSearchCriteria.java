@@ -1,9 +1,12 @@
 package com.hgbong.blogsearch.model.search;
 
 import io.swagger.annotations.ApiParam;
-import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 
 @Getter

@@ -4,15 +4,15 @@ import com.hgbong.blogsearch.model.common.PageResponse;
 import com.hgbong.blogsearch.model.search.BlogSearchCriteria;
 import com.hgbong.blogsearch.model.search.DocumentDto;
 import com.hgbong.blogsearch.service.BlogSearchService;
-import com.hgbong.blogsearch.service.QueryService;
 import com.hgbong.blogsearch.util.QueryStorage;
 import io.swagger.annotations.ApiOperation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
