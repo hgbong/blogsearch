@@ -41,6 +41,7 @@
 a. 배포된 jar 실행
 - 다음의 google drive 링크를 통해 blogsearch-1.0.0.jar 다운로드 
 - https://drive.google.com/file/d/1kCB4irysRH4ZtdtyOgZXYEEDwOms_XfT/view?usp=share_link
+- (크롬 시크릿 모드는 다운로드되지 않음 주의)
 - 다운로드 후 아래 명령어를 통해 실행 (java 11 이상 환경 필요)
 - ```shell
   java -jar blogsearch-1.0.0.jar
@@ -75,7 +76,8 @@ b. git clone 및 프로젝트 빌드 후 실행
 ---
 
 ## 구현 내용 요약
-- 검색어 입력 조회 시, 해당 검색어를 캐싱
-- 일정 주기동안 캐싱한 검색어와 검색 횟수 정보를 비동기적으로 DB에 반영
-- 검색어 DB 입력 과정에서 멀티쓰레드 안정성 확보
+- 검색어 입력 조회 시 해당 검색어와 검색 횟수를 캐싱
+- 저장해둔 검색어,검색 횟수 정보를 일정 주기마다 비동기적으로 DB에 반영
+  - 현재는 1초로 설정되어 있으나, application.yml 에서 cron 변경 가능
+- 검색어 DB Insert/Update 쓰레드 안정성 확보
 - 검색소스 오픈 API 장애 시, 타 오픈 API를 사용하는 chain of responsibility 구조 적용
