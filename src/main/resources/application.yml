@@ -15,13 +15,11 @@ spring:
     show-sql: true
     open-in-view : false
 
-
 search-engine:
   kakao:
     url: https://dapi.kakao.com
     path: /v2/search/blog
     token: e5d890141a40a5289b1d74160b192c81
-
     # todo
   naver:
     url: https://developers.naver.com

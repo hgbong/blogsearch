@@ -8,10 +8,14 @@ import com.hgbong.blogsearch.service.QueryService;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
+@Slf4j
 @RestController
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
@@ -27,7 +31,12 @@ public class BlogController {
     public PageResponse<DocumentDto> pageBlogs(@Valid BlogSearchCriteria blogSearch) {
 
         // todo 검색 기능과 분리 - insert 실패해도 API 동작 , 조회 성능문제 되지 않도록 처리 등
-        queryService.addQueryCount(blogSearch.getQuery());
+
+        CompletableFuture<Void> queryCountAsync = queryService.increaseQueryCountAsync(blogSearch.getQuery());
+        queryCountAsync.exceptionally(throwable -> {
+            log.warn("insert or update query has problem : ", throwable);
+            return null;
+        });
 
         return blogSearchService.pageBlogs(blogSearch);
     }
