@@ -45,6 +45,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(response, httpStatus);
     }
 
+    // todo  WebClient exception hendler 연결 후, 해당 Class type 으로 선언
     @ExceptionHandler(value = WebClientResponseException.BadRequest.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestException(WebClientResponseException.BadRequest e) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
