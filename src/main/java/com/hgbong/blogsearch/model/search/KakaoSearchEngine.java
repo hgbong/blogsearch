@@ -13,7 +13,6 @@ import java.util.Map;
 @Component
 public class KakaoSearchEngine implements SearchEngine {
 
-    // todo  설정 분리
     @Value(value = "${search-engine.kakao.url}")
     private String url;
 
@@ -30,8 +29,6 @@ public class KakaoSearchEngine implements SearchEngine {
             .defaultHeaders(headers -> {
                 headers.add("Authorization", "KakaoAK " + token);
             })
-            .build()
-            .mutate()
             .build();
 
         // fixme  block() 처리 수정

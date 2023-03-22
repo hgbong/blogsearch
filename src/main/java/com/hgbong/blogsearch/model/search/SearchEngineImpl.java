@@ -24,8 +24,10 @@ public class SearchEngineImpl implements SearchEngine {
     @PostConstruct
     public void init() {
         searchEngines = new ArrayList<>();
-        searchEngines.add(kakaoSearchEngine);
+
+        // temp !!! fixme 순서
         searchEngines.add(naverSearchEngine);
+        searchEngines.add(kakaoSearchEngine);
     }
 
     @Override

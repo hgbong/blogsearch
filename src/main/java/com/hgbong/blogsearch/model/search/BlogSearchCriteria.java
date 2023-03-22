@@ -27,7 +27,7 @@ public class BlogSearchCriteria {
     @Max(50)
     private int size = 10;
 
-    @BlogSortCheck
+    // @BlogSortCheck
     @ApiParam(value = "정렬", example = "recency")
     private String sort = BlogSortType.ACCURACY;
 }
