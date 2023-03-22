@@ -35,8 +35,6 @@ dependencies {
 
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 
-	testImplementation 'org.awaitility:awaitility:4.2.0'
-
 }
 
 tasks.named('test') {

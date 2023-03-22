@@ -1,8 +1,9 @@
-package com.hgbong.blogsearch.util;
+package com.hgbong.blogsearch.scheduler;
 
 import com.hgbong.blogsearch.service.QueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +13,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
+@EnableScheduling
 @RequiredArgsConstructor
-public class QueryStorage {
+public class QueryScheduler {
 
     // 정해진 시간동안 검색된 검색어와 횟수를 저장하는 Map
-    private final ConcurrentHashMap<String, Long> queryMap = new ConcurrentHashMap();
+    private final ConcurrentHashMap<String, Long> queryCountMap = new ConcurrentHashMap();
 
     private final QueryService queryService;
 
@@ -26,7 +28,7 @@ public class QueryStorage {
      * @param query 검색어
      */
     public void querySearched(String query) {
-        queryMap.put(query, queryMap.getOrDefault(query, 0l) + 1);
+        queryCountMap.put(query, queryCountMap.getOrDefault(query, 0l) + 1);
     }
 
     /**
@@ -34,14 +36,14 @@ public class QueryStorage {
      */
     @Scheduled(cron = "${query-cron:*/1 * * * * *}")
     public void saveQueryCount() {
-        Set<Map.Entry<String, Long>> entries = queryMap.entrySet();
+        Set<Map.Entry<String, Long>> entries = queryCountMap.entrySet();
         for (Map.Entry<String, Long> entry : entries) {
             queryService.addQueryCount(entry.getKey(), entry.getValue())
                 .exceptionally(throwable -> {
                     log.warn("insert or update query has problem : ", throwable);
                     return null;
                 });
-            queryMap.remove(entry.getKey());
+            queryCountMap.remove(entry.getKey());
         }
     }
 }
