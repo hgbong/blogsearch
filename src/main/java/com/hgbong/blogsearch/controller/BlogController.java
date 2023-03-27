@@ -1,5 +1,6 @@
 package com.hgbong.blogsearch.controller;
 
+import com.hgbong.blogsearch.event.QueryEvent;
 import com.hgbong.blogsearch.model.common.PageResponse;
 import com.hgbong.blogsearch.model.search.BlogSearchCriteria;
 import com.hgbong.blogsearch.model.search.DocumentDto;
@@ -8,6 +9,8 @@ import com.hgbong.blogsearch.scheduler.QueryScheduler;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +21,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
-public class BlogController {
+public class BlogController implements ApplicationEventPublisherAware {
+
+    private ApplicationEventPublisher publisher;
 
     private final BlogSearchService blogSearchService;
 
@@ -29,8 +34,16 @@ public class BlogController {
     @GetMapping
     public PageResponse<DocumentDto> pageBlogs(@Valid BlogSearchCriteria blogSearch) {
 
+        publisher.publishEvent(new QueryEvent(this, blogSearch.getQuery()));
+
         queryScheduler.querySearched(blogSearch.getQuery());
 
         return blogSearchService.pageBlogs(blogSearch);
     }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.publisher = applicationEventPublisher;
+    }
+
 }
