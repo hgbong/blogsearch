@@ -38,12 +38,29 @@ public class QueryScheduler {
     public void saveQueryCount() {
         Set<Map.Entry<String, Long>> entries = queryCountMap.entrySet();
         for (Map.Entry<String, Long> entry : entries) {
-            queryService.addQueryCount(entry.getKey(), entry.getValue())
-                .exceptionally(throwable -> {
-                    log.warn("insert or update query has problem : ", throwable);
+            String query = entry.getKey();
+            Long queryCount = entry.getValue();
+
+            // 방법2
+            queryService.addQueryCount(query, queryCount)
+                .handle((result, throwable) -> {
+                    if (throwable != null) {
+                        // exception 발생 -> rollback
+                        // 이 경우에는 별도 처리 X
+                    } else {
+                        // 성공한 경우, 중간에 입력된 검색어 검색횟수 고려
+                        Long currentQueryCount = queryCountMap.get(query);
+                        if (currentQueryCount > queryCount) {
+                            // 해당 검색어가 그 사이에 입력된 경우
+                            queryCountMap.put(query, queryCountMap.get(query) - queryCount);
+                        } else {
+                            // 그 사이에 해당 검색어가 입력되지 않은 경우
+                            queryCountMap.remove(query);
+                        }
+                    }
+
                     return null;
                 });
-            queryCountMap.remove(entry.getKey());
         }
     }
 }
